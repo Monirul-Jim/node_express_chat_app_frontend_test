@@ -23,7 +23,6 @@ const Login = () => {
   } = useForm<FormData>();
   const [showPassword, setShowPassword] = useState(false);
   const [loginUser, { isLoading, error }] = useLoginUserMutation();
-  console.log(error);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
@@ -39,59 +38,61 @@ const Login = () => {
   };
 
   return (
-    <div className="wrapper">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h2>Login</h2>
+    <div className="card flex justify-center items-center min-h-screen">
+      <div className="wrapper">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <h2>Login</h2>
 
-        {/* Email Field */}
-        <div className="input-field">
-          <input
-            type="text"
-            {...register("email", { required: "Email is required" })}
-          />
-          <label>Enter your email</label>
-          {errors.email && (
-            <span className="error">{errors.email.message}</span>
-          )}
-        </div>
-
-        {/* Password Field */}
-        <div className="input-field">
-          <input
-            type={showPassword ? "text" : "password"}
-            {...register("password", { required: "Password is required" })}
-          />
-          <label>Enter your password</label>
-          {error?.data?.message && (
-            <span className="text-white">{error?.data?.message}</span>
-          )}
-          {errors.password && (
-            <span className="error">{errors.password.message}</span>
-          )}
-        </div>
-
-        {/* Remember Me Checkbox */}
-        <div className="forget">
-          <label>
+          {/* Email Field */}
+          <div className="input-field">
             <input
-              type="checkbox"
-              id="remember"
-              onClick={togglePasswordVisibility}
+              type="text"
+              {...register("email", { required: "Email is required" })}
             />
-            <p> {showPassword ? "Hide" : "Show"} Password</p>
-          </label>
-        </div>
+            <label>Enter your email</label>
+            {errors.email && (
+              <span className="error">{errors.email.message}</span>
+            )}
+          </div>
 
-        {/* Submit Button */}
-        <button type="submit">Log In</button>
+          {/* Password Field */}
+          <div className="input-field">
+            <input
+              type={showPassword ? "text" : "password"}
+              {...register("password", { required: "Password is required" })}
+            />
+            <label>Enter your password</label>
+            {error?.data?.message && (
+              <span className="text-white">{error?.data?.message}</span>
+            )}
+            {errors.password && (
+              <span className="error">{errors.password.message}</span>
+            )}
+          </div>
 
-        {/* Register Link */}
-        <div className="register">
-          <p>
-            Don't have an account? <a href="/register">Register</a>
-          </p>
-        </div>
-      </form>
+          {/* Remember Me Checkbox */}
+          <div className="forget">
+            <label>
+              <input
+                type="checkbox"
+                id="remember"
+                onClick={togglePasswordVisibility}
+              />
+              <p> {showPassword ? "Hide" : "Show"} Password</p>
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit">Log In</button>
+
+          {/* Register Link */}
+          <div className="register">
+            <p>
+              Don't have an account? <a href="/register">Register</a>
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
