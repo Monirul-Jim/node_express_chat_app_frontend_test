@@ -5,6 +5,7 @@ import Login from "../Home/Login/Login"; // Assuming you also have Login
 import MainDashboard from "../dashboard/Admin/MainDashboard";
 import AdminHomePage from "../dashboard/Admin/AdminHomePage";
 import ManageUsers from "../dashboard/Admin/ManageUsers";
+import ChatPage from "../ChatWindow/ChatPage";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/chat",
+        element: <ChatPage />,
       },
     ],
   },

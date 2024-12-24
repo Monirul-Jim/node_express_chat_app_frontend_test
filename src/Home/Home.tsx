@@ -1,11 +1,15 @@
-import Login from "./Login/Login";
+// import { useAppSelector } from "../redux/feature/hooks";
+// import Login from "./Login/Login";
 
-const Home = () => {
-  return (
-    <div>
-      <Login />
-    </div>
-  );
-};
+// const Home = () => {
+//   const user = useAppSelector((state) => state.auth.user);
+//   console.log(user);
 
-export default Home;
+//   return (
+//     <div>
+//       <Login />
+//     </div>
+//   );
+// };
+
+// export default Home;

@@ -21,31 +21,34 @@ const authApi = baseApi.injectEndpoints({
         url: "/auth",
         method: "GET",
       }),
+      providesTags: ["user"], // Provides the "user" tag for cache management
     }),
+
     updateIsDeleted: builder.mutation({
       query: ({ userId, isDeleted }) => ({
         url: `/auth/${userId}/isDeleted`,
         method: "PATCH",
         body: { isDeleted },
       }),
+      invalidatesTags: ["user"], // Ensures the cache for the "user" tag is invalidated
     }),
 
-    // Update role of a user
     updateRole: builder.mutation({
       query: ({ userId, role }) => ({
         url: `/auth/${userId}/role`,
         method: "PATCH",
         body: { role },
       }),
+      invalidatesTags: ["user"], // Invalidates the user cache
     }),
 
-    // Update status of a user
     updateStatus: builder.mutation({
       query: ({ userId, status }) => ({
         url: `/auth/${userId}/status`,
         method: "PATCH",
         body: { status },
       }),
+      invalidatesTags: ["user"], // Invalidates the user cache
     }),
   }),
 });

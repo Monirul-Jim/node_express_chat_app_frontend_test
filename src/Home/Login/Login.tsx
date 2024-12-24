@@ -5,6 +5,7 @@ import { useLoginUserMutation } from "../../redux/api/authApi";
 import { verifyToken } from "../../utils/verifyToken";
 import { useAppDispatch } from "../../redux/feature/hooks";
 import { setUser, TUser } from "../../redux/feature/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 // Define the form data interface
 interface FormData {
@@ -16,6 +17,7 @@ interface FormData {
 const Login = () => {
   // Initialize useForm hook
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -31,15 +33,28 @@ const Login = () => {
   // Handle form submission
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     const res = await loginUser(data);
-    console.log(res?.data?.data);
 
     const user = verifyToken(res?.data?.data?.accessToken) as TUser;
     dispatch(setUser({ user: user, token: res?.data?.data?.accessToken }));
+    // Redirect based on user role
+    if (user.role === "admin") {
+      navigate("/dashboard");
+    } else if (user.role === "user") {
+      navigate("/chat");
+    }
   };
 
   return (
     <div className="card flex justify-center items-center min-h-screen">
       <div className="wrapper">
+        {/* {user?.role === "admin" && (
+          <a href="/dashboard">
+            <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
+              Go to Dashboard
+            </button>
+          </a>
+        )} */}
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <h2>Login</h2>
 
@@ -83,7 +98,7 @@ const Login = () => {
           </div>
 
           {/* Submit Button */}
-          <button type="submit">Log In</button>
+          <button type="submit">{isLoading ? "Logging..." : "Log In"}</button>
 
           {/* Register Link */}
           <div className="register">
