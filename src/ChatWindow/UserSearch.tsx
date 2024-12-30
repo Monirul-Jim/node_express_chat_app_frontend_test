@@ -13,6 +13,7 @@ interface UserSearchProps {
 
 const UserSearch = ({ onUserSelect }: UserSearchProps) => {
   const user = useAppSelector((state) => state.auth.user);
+
   const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch users based on the search query

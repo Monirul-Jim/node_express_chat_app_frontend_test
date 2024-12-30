@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import "./App.css";
 import { useAppSelector } from "./redux/feature/hooks";
@@ -6,14 +6,15 @@ import { useAppSelector } from "./redux/feature/hooks";
 function App() {
   const user = useAppSelector((state) => state.auth.user);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (user) {
-      navigate("/chat");
-    } else {
-      navigate("/");
+    if (user && location.pathname !== "/chat") {
+      navigate("/chat", { replace: true });
+    } else if (!user && !["/", "/register"].includes(location.pathname)) {
+      navigate("/", { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, location.pathname, navigate]);
 
   return (
     <>
