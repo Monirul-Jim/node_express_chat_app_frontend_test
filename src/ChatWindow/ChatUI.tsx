@@ -4,6 +4,7 @@ import { useAppSelector } from "../redux/feature/hooks";
 import videoCallImg from "../assets/video.png";
 import audioCallImg from "../assets/phone.png";
 import microphoneImg from "../assets/microphone.png";
+import { TUser } from "../redux/feature/auth/authSlice";
 const socket = io("http://localhost:5000"); // Socket.IO server URL
 
 interface ChatMessage {
@@ -15,7 +16,7 @@ interface ChatMessage {
 }
 
 interface ChatUIProps {
-  selectedUser: { userId: string; firstName: string; lastName: string };
+  selectedUser: TUser;
   onBack: () => void;
 }
 
@@ -228,11 +229,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
             <h1 className="text-lg font-semibold">
               {selectedUser.firstName} {selectedUser.lastName}
             </h1>
-            <span
-              className={`text-sm ${
-                userStatus === "online" ? "text-green-500" : "text-red-500"
-              }`}
-            >
+            <span className="text-sm">
               {userStatus === "online" ? "Online" : "Offline"}
             </span>
           </div>

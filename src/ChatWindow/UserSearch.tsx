@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useAppSelector } from "../redux/feature/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/feature/hooks";
 import {
   useAddedUserMutation,
   useGetSearchUserQuery,
   useGetAddedUsersQuery,
 } from "../redux/api/userApi";
-import { TUser } from "../redux/feature/auth/authSlice";
+import { logout, TUser } from "../redux/feature/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 interface UserSearchProps {
   onUserSelect: (user: TUser) => void;
@@ -15,6 +16,8 @@ const UserSearch = ({ onUserSelect }: UserSearchProps) => {
   const user = useAppSelector((state) => state.auth.user);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // Fetch users based on the search query
   const { data, isLoading, isError } = useGetSearchUserQuery(searchQuery);
@@ -41,15 +44,24 @@ const UserSearch = ({ onUserSelect }: UserSearchProps) => {
   };
 
   const handleAddedUserSelect = (addedUser: TUser) => {
-    onUserSelect(addedUser); // Trigger the chat window to open when an added user is selected
+    onUserSelect(addedUser);
+  };
+  const handleLogout = () => {
+    const res = dispatch(logout());
+    if (res) {
+      navigate("/login");
+    }
   };
 
   return (
     <div className="h-full bg-gray-900 text-white flex flex-col">
-      <div className="bg-blue-600 text-white p-4">
+      <div className="flex justify-between items-center bg-blue-600  p-4">
         <h1 className="text-lg font-semibold">
           {user?.firstName} {user?.lastName}
         </h1>
+        <button onClick={handleLogout} className="py-1 px-3 rounded-lg">
+          Logout
+        </button>
       </div>
 
       <div className="p-4 bg-gray-800">

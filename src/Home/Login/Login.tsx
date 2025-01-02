@@ -6,6 +6,7 @@ import { verifyToken } from "../../utils/verifyToken";
 import { useAppDispatch } from "../../redux/feature/hooks";
 import { setUser, TUser } from "../../redux/feature/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 // Define the form data interface
 interface FormData {
@@ -13,6 +14,9 @@ interface FormData {
   password: string;
   remember: boolean;
 }
+type ErrorData = {
+  message?: string;
+};
 
 const Login = () => {
   // Initialize useForm hook
@@ -43,6 +47,18 @@ const Login = () => {
       navigate("/chat");
     }
   };
+  function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryError {
+    return typeof error === "object" && error !== null && "data" in error;
+  }
+
+  function hasMessage(data: unknown): data is ErrorData {
+    return (
+      typeof data === "object" &&
+      data !== null &&
+      "message" in data &&
+      typeof (data as ErrorData).message === "string"
+    );
+  }
 
   return (
     <div className="card flex justify-center items-center min-h-screen">
@@ -77,8 +93,8 @@ const Login = () => {
               {...register("password", { required: "Password is required" })}
             />
             <label>Enter your password</label>
-            {error?.data?.message && (
-              <span className="text-white">{error?.data?.message}</span>
+            {isFetchBaseQueryError(error) && hasMessage(error.data) && (
+              <span className="text-white">{error.data.message}</span>
             )}
             {errors.password && (
               <span className="error">{errors.password.message}</span>

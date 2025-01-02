@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import "../Login/login.css";
 import { useState } from "react";
 import { useRegisterUserMutation } from "../../redux/api/authApi";
-import { useNavigate } from "react-router-dom";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 // Define the form data interface
 interface FormData {
@@ -11,9 +11,10 @@ interface FormData {
   email: string;
   password: string;
 }
-
+type ErrorData = {
+  message?: string;
+};
 const Register = () => {
-  const navigate = useNavigate();
   // Initialize useForm hook
   const {
     register,
@@ -21,7 +22,8 @@ const Register = () => {
     formState: { errors },
   } = useForm<FormData>();
   const [showPassword, setShowPassword] = useState(false);
-  const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [registerUser, { isLoading, error, isSuccess }] =
+    useRegisterUserMutation();
 
   // Password visibility toggle
   const togglePasswordVisibility = () => {
@@ -31,15 +33,33 @@ const Register = () => {
   // Handle form submission
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     await registerUser(data);
-    navigate("/");
   };
+  function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryError {
+    return typeof error === "object" && error !== null && "data" in error;
+  }
+
+  function hasMessage(data: unknown): data is ErrorData {
+    return (
+      typeof data === "object" &&
+      data !== null &&
+      "message" in data &&
+      typeof (data as ErrorData).message === "string"
+    );
+  }
 
   return (
     <div className="card flex justify-center items-center min-h-screen">
       <div className="wrapper">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h2>Register</h2>
-
+          {isFetchBaseQueryError(error) && hasMessage(error.data) && (
+            <span className="text-white">{error.data.message}</span>
+          )}
+          {isSuccess && (
+            <span className="text-white">
+              Your registration is successful , please login
+            </span>
+          )}
           {/* First Name Field */}
           <div className="input-field">
             <input
@@ -49,7 +69,7 @@ const Register = () => {
             <label>Enter your first name</label>
 
             {errors.firstName && (
-              <span className="error">{errors.firstName.message}</span>
+              <span className="text-white">{errors.firstName.message}</span>
             )}
           </div>
 
@@ -61,7 +81,7 @@ const Register = () => {
             />
             <label>Enter your last name</label>
             {errors.lastName && (
-              <span className="error">{errors.lastName.message}</span>
+              <span className="text-white">{errors.lastName.message}</span>
             )}
           </div>
 
@@ -75,7 +95,7 @@ const Register = () => {
             <label>Enter your email</label>
 
             {errors.email && (
-              <span className="error">{errors.email.message}</span>
+              <span className="text-white">{errors.email.message}</span>
             )}
           </div>
 
@@ -88,7 +108,7 @@ const Register = () => {
             <label>Enter your password</label>
 
             {errors.password && (
-              <span className="error">{errors.password.message}</span>
+              <span className="text-white">{errors.password.message}</span>
             )}
           </div>
 
