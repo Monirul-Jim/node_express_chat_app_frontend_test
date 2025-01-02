@@ -1,179 +1,3 @@
-// import { useState, useEffect, useCallback } from "react";
-// import { useAppSelector } from "../redux/feature/hooks";
-// import { io } from "socket.io-client";
-// import videoCallImg from "../assets/video.png";
-// import audioCallImg from "../assets/phone.png";
-// const socket = io("http://localhost:5000");
-
-// interface ChatMessage {
-//   sender: string;
-//   recipient: string;
-//   text: string;
-//   timestamp: string;
-// }
-
-// interface ChatUIProps {
-//   selectedUser: { userId: string; firstName: string; lastName: string };
-//   onBack: () => void;
-// }
-
-// const ChatUI = ({ selectedUser, onBack }: ChatUIProps) => {
-//   const user = useAppSelector((state) => state.auth.user);
-//   const [input, setInput] = useState("");
-//   const [messages, setMessages] = useState<ChatMessage[]>([]);
-//   const [isTyping, setIsTyping] = useState(false); // Track if the user is typing
-
-//   useEffect(() => {
-//     if (user) {
-//       socket.emit("register", user._id);
-//     }
-
-//     socket.emit("fetchMessages", {
-//       user: user?._id,
-//       chatWith: selectedUser.userId,
-//     });
-
-//     socket.on("previousMessages", (fetchedMessages: ChatMessage[]) => {
-//       setMessages(fetchedMessages);
-//     });
-
-//     socket.on("message", (message: ChatMessage) => {
-//       if (
-//         (message.sender === selectedUser.userId &&
-//           message.recipient === user?._id) ||
-//         (message.sender === user?._id &&
-//           message.recipient === selectedUser.userId)
-//       ) {
-//         setMessages((prevMessages) => [...prevMessages, message]);
-//       }
-//     });
-
-//     socket.on("typing", (senderId: string) => {
-//       if (senderId === selectedUser.userId) {
-//         setIsTyping(true); // Show typing indicator when the other user is typing
-//       }
-//     });
-
-//     socket.on("stoppedTyping", (senderId: string) => {
-//       if (senderId === selectedUser.userId) {
-//         setIsTyping(false); // Hide typing indicator when the other user stops typing
-//       }
-//     });
-
-//     return () => {
-//       socket.off("message");
-//       socket.off("previousMessages");
-//       socket.off("typing");
-//       socket.off("stoppedTyping");
-//     };
-//   }, [selectedUser, user]);
-
-//   const handleTyping = useCallback(() => {
-//     if (input.trim()) {
-//       socket.emit("typing", {
-//         senderId: user?._id,
-//         recipientId: selectedUser.userId,
-//       });
-//     } else {
-//       socket.emit("stoppedTyping", {
-//         senderId: user?._id,
-//         recipientId: selectedUser.userId,
-//       });
-//     }
-//   }, [input, user?._id, selectedUser.userId]);
-
-//   const sendMessage = () => {
-//     if (input.trim() && user) {
-//       const message: ChatMessage = {
-//         sender: user._id,
-//         recipient: selectedUser.userId,
-//         text: input,
-//         timestamp: new Date().toISOString(),
-//       };
-//       socket.emit("message", message); // Send message to the server
-//       setMessages((prevMessages) => [...prevMessages, message]); // Optimistically update UI
-//       setInput(""); // Clear the input field
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (input.trim()) {
-//       handleTyping(); // Emit typing event if the user is typing
-//     } else {
-//       handleTyping(); // Emit stopped typing event if input is empty
-//     }
-//   }, [input, handleTyping]);
-
-//   return (
-//     <div className="h-full flex flex-col bg-gray-900 text-white">
-//       <div className="bg-blue-600 text-white p-4 flex items-center justify-between sticky top-0 z-10">
-//         <button
-//           onClick={onBack}
-//           className="text-white bg-blue-700 p-2 rounded-lg"
-//         >
-//           Back
-//         </button>
-//         <h1 className="text-lg font-semibold">
-//           {selectedUser.firstName} {selectedUser.lastName}
-//         </h1>
-//         <div className="flex space-x-4">
-//           <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800 transition ease-in-out duration-300">
-//             <img src={videoCallImg} alt="video call" className="w-6 h-6" />
-//           </button>
-//           <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800 transition ease-in-out duration-300">
-//             <img src={audioCallImg} alt="audio call" className="w-6 h-6" />
-//           </button>
-//         </div>
-//       </div>
-
-//       <div className="flex-1 overflow-y-auto p-4">
-//         {messages.map((msg, idx) => (
-//           <div
-//             key={idx}
-//             className={`mb-2 flex ${
-//               msg.sender === user?._id ? "justify-end" : "justify-start"
-//             }`}
-//           >
-//             <div
-//               className={`p-2 rounded-lg text-white ${
-//                 msg.sender === user?._id ? "bg-blue-500" : "bg-gray-700"
-//               } max-w-xs break-words`}
-//             >
-//               <p className="whitespace-pre-wrap">{msg.text}</p>
-//             </div>
-//           </div>
-//         ))}
-
-//         {/* Show typing indicator only after the last message */}
-//         {isTyping && (
-//           <div className="mt-2 text-white italic">
-//             {selectedUser.firstName} is typing...
-//           </div>
-//         )}
-//       </div>
-
-//       <div className="flex items-center p-4 border-t bg-gray-800">
-//         <input
-//           type="text"
-//           className="flex-1 px-4 py-2 border rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-//           placeholder="Type a message..."
-//           value={input}
-//           onChange={(e) => setInput(e.target.value)} // Directly set input state
-//           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-//         />
-//         <button
-//           className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-//           onClick={sendMessage}
-//         >
-//           Send
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ChatUI;
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 import { useAppSelector } from "../redux/feature/hooks";
@@ -200,22 +24,29 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
   const [input, setInput] = useState<string>("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [isCallActive, setIsCallActive] = useState<boolean>(false);
-  const [isVideoCall, setIsVideoCall] = useState<boolean>(false);
-  const [callerId, setCallerId] = useState<string | null>(null); // Add state for callerId
-
-  // WebRTC refs
-  const localVideoRef = useRef<HTMLVideoElement>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
-  const localStream = useRef<MediaStream | null>(null);
-
+  const [userStatus, setUserStatus] = useState<string>("offline");
   // Fetch messages and register user
   useEffect(() => {
     if (user) {
       socket.emit("register", user._id); // Register user with Socket.IO
     }
+    if (selectedUser && user) {
+      // Start a chat with the selected user
+      socket.emit("startChat", {
+        userId: user._id,
+        selectedUserId: selectedUser.userId,
+      });
 
+      // Emit checkUserStatus to get the selected user's status
+      socket.emit("checkUserStatus", selectedUser.userId);
+
+      socket.on("userStatus", ({ userId, status }) => {
+        if (userId === selectedUser.userId) {
+          setUserStatus(status); // Update status for the selected user
+        }
+      });
+    }
     socket.emit("fetchMessages", {
       user: user?._id,
       chatWith: selectedUser.userId,
@@ -257,64 +88,20 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
         socket.emit("answer", { answer, recipientId: senderId });
       }
     });
-    socket.on("callAccepted", ({ recipientId }) => {
-      console.log(`Call accepted by ${recipientId}`);
-      // Transition to the call UI
-      setIsCallActive(true);
-    });
-
-    socket.on("callRejected", ({ recipientId }) => {
-      console.log(`Call rejected by ${recipientId}`);
-      setIsCallActive(false);
-      setCallerId(null);
-    });
-
-    socket.on("answer", async ({ answer }) => {
-      if (peerConnection.current) {
-        await peerConnection.current.setRemoteDescription(
-          new RTCSessionDescription(answer)
-        );
-      }
-    });
-    socket.on("iceCandidate", async ({ candidate }) => {
-      if (peerConnection.current) {
-        await peerConnection.current.addIceCandidate(
-          new RTCIceCandidate(candidate)
-        );
-      }
-    });
-
-    socket.on("incomingCall", ({ callerId, callType }) => {
-      if (callerId !== user?._id) {
-        setCallerId(callerId);
-        setIsCallActive(true);
-        setIsVideoCall(callType === "video");
-
-        const accept = window.confirm(
-          `Incoming ${callType.toUpperCase()} call from ${callerId}. Accept?`
-        );
-        if (accept) {
-          startCall(callType === "video", true); // Start WebRTC
-          socket.emit("callAccepted", { callerId, recipientId: user?._id });
-        } else {
-          socket.emit("callRejected", { callerId, recipientId: user?._id });
-        }
-      }
-    });
-
-    socket.on("callEnded", () => {
-      endCall();
-    });
 
     return () => {
+      if (selectedUser && user) {
+        // End the chat when the user leaves the conversation
+        socket.emit("endChat", {
+          userId: user?._id,
+          selectedUserId: selectedUser.userId,
+        });
+      }
       socket.off("message");
       socket.off("previousMessages");
       socket.off("typing");
       socket.off("stoppedTyping");
-      socket.off("incomingCall");
-      socket.off("callEnded");
-      socket.off("callAccepted");
-      socket.off("callRejected");
+      socket.off("userStatus");
     };
   }, [selectedUser, user]);
 
@@ -354,94 +141,109 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
     }
   };
 
-  const startCall = async (isVideo: boolean, isIncoming: boolean = false) => {
-    setIsVideoCall(isVideo);
-    setIsCallActive(true);
+  //  here start audio record
 
-    // Capture local media stream
-    localStream.current = await navigator.mediaDevices.getUserMedia({
-      video: isVideo,
-      audio: true,
-    });
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
-    if (localVideoRef.current && localStream.current) {
-      localVideoRef.current.srcObject = localStream.current;
-    }
+  const startRecording = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mediaRecorder = new MediaRecorder(stream);
+    mediaRecorderRef.current = mediaRecorder;
+    audioChunksRef.current = [];
 
-    peerConnection.current = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    });
-
-    // Add local tracks to the peer connection
-    localStream.current.getTracks().forEach((track) => {
-      peerConnection.current?.addTrack(track, localStream.current!);
-    });
-
-    // Handle remote stream
-    peerConnection.current.ontrack = (event) => {
-      const [stream] = event.streams;
-      if (remoteVideoRef.current) {
-        remoteVideoRef.current.srcObject = stream;
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        audioChunksRef.current.push(event.data);
       }
     };
 
-    // ICE candidate handling
-    peerConnection.current.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.emit("iceCandidate", {
-          candidate: event.candidate,
-          recipientId: selectedUser.userId,
-        });
-      }
-    };
-
-    if (!isIncoming) {
-      // If this is the caller, create and send an offer
-      const offer = await peerConnection.current.createOffer();
-      await peerConnection.current.setLocalDescription(offer);
-
-      socket.emit("offer", {
-        offer,
-        recipientId: selectedUser.userId,
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(audioChunksRef.current, {
+        type: "audio/webm",
       });
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64Audio = reader.result as string; // Base64 audio string
+        socket.emit("message", {
+          sender: user?._id,
+          recipient: selectedUser.userId,
+          audioUrl: base64Audio,
+          timestamp: new Date().toISOString(),
+        });
+      };
+
+      reader.readAsDataURL(audioBlob); // Convert blob to base64
+    };
+
+    mediaRecorder.start();
+    setIsRecording(true);
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+  const formatDateLabel = (date: string): string => {
+    const today = new Date();
+    const messageDate = new Date(date);
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    if (messageDate.toDateString() === today.toDateString()) {
+      return "Today";
+    } else if (messageDate.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    } else {
+      return messageDate.toLocaleDateString();
     }
   };
 
-  const endCall = () => {
-    peerConnection.current?.close();
-    localStream.current?.getTracks().forEach((track) => track.stop());
-    setIsCallActive(false);
-    setIsVideoCall(false);
-    setCallerId(null);
-
-    if (localVideoRef.current) localVideoRef.current.srcObject = null;
-    if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
-  };
-
+  const groupedMessages = messages.reduce<Record<string, ChatMessage[]>>(
+    (acc, msg) => {
+      const dateKey = new Date(msg.timestamp).toDateString();
+      if (!acc[dateKey]) acc[dateKey] = [];
+      acc[dateKey].push(msg);
+      return acc;
+    },
+    {}
+  );
   return (
     <div className="h-full flex flex-col bg-gray-900 text-white">
       {/* Header */}
       <div className="bg-blue-600 p-4 flex items-center justify-between sticky top-0 z-10">
-        <button
-          onClick={onBack}
-          className="text-white bg-blue-700 px-4 py-2 rounded-lg"
-        >
-          Back
-        </button>
-        <h1 className="text-lg font-semibold">
-          {selectedUser.firstName} {selectedUser.lastName}
-        </h1>
-        <div className="flex space-x-4">
+        {/* Left Section: Back button and selected user */}
+        <div className="flex items-center space-x-4">
           <button
-            onClick={() => startCall(true)}
-            className="bg-blue-700 p-2 rounded-full hover:bg-blue-800"
+            onClick={onBack}
+            className="text-white bg-blue-700 px-4 py-2 rounded-lg"
           >
+            Back
+          </button>
+          <div>
+            <h1 className="text-lg font-semibold">
+              {selectedUser.firstName} {selectedUser.lastName}
+            </h1>
+            <span
+              className={`text-sm ${
+                userStatus === "online" ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {userStatus === "online" ? "Online" : "Offline"}
+            </span>
+          </div>
+        </div>
+
+        {/* Right Section: Video and Audio Call buttons */}
+        <div className="flex space-x-4">
+          <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800">
             <img src={videoCallImg} alt="Video Call" className="w-6 h-6" />
           </button>
-          <button
-            onClick={() => startCall(false)}
-            className="bg-blue-700 p-2 rounded-full hover:bg-blue-800"
-          >
+          <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800">
             <img src={audioCallImg} alt="Audio Call" className="w-6 h-6" />
           </button>
         </div>
@@ -449,7 +251,45 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4">
-        {messages.map((msg, idx) => (
+        <div>
+          {Object.keys(groupedMessages).map((dateKey, index) => (
+            <div key={index}>
+              <div className="text-center text-gray-500 my-4">
+                {formatDateLabel(dateKey)}
+              </div>
+              {groupedMessages[dateKey].map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`mb-2 flex ${
+                    msg.sender === user?._id ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <div
+                    className={`p-2 rounded-lg text-white flex items-center ${
+                      msg.sender === user?._id ? "bg-blue-500" : "bg-gray-700"
+                    }`}
+                  >
+                    {msg.text ? (
+                      <span>{msg.text}</span>
+                    ) : msg.audioUrl ? (
+                      <audio controls className="mr-2">
+                        <source src={msg.audioUrl} type="audio/webm" />
+                        Your browser does not support the audio element.
+                      </audio>
+                    ) : null}
+                    <span className="text-sm text-gray-300 ml-2">
+                      {new Date(msg.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        {/* {messages.map((msg, idx) => (
           <div
             key={idx}
             className={`mb-2 flex ${
@@ -457,46 +297,36 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
             }`}
           >
             <div
-              className={`p-2 rounded-lg text-white ${
+              className={`p-2 rounded-lg text-white flex items-center ${
                 msg.sender === user?._id ? "bg-blue-500" : "bg-gray-700"
               }`}
             >
-              {msg.text}
+              {msg.text ? (
+                <span>{msg.text}</span>
+              ) : msg.audioUrl ? (
+                <audio controls className="mr-2">
+                  <source src={msg.audioUrl} type="audio/webm" />
+                  Your browser does not support the audio element.
+                </audio>
+              ) : null}
+              <span className="text-sm text-gray-300 ml-2">
+                {new Date(msg.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
           </div>
-        ))}
-        {isTyping && <p className="italic">Typing...</p>}
-      </div>
+        ))} */}
 
-      {/* Call UI */}
-      {isCallActive && (
-        <div className="absolute inset-0 bg-gray-800 flex flex-col items-center justify-center">
-          <h2 className="text-white text-lg">
-            {isVideoCall ? "Video" : "Audio"} Call
-          </h2>
-          <div className="flex space-x-4 mt-4">
-            <video
-              ref={localVideoRef}
-              autoPlay
-              muted
-              className="w-1/3 rounded-lg"
-            ></video>
-            {isVideoCall && (
-              <video
-                ref={remoteVideoRef}
-                autoPlay
-                className="w-1/3 rounded-lg"
-              ></video>
-            )}
+        {isTyping && <p className="italic">Typing...</p>}
+        {isRecording && (
+          <div className="ml-4 flex items-center">
+            <div className="animate-pulse bg-red-500 h-4 w-4 rounded-full"></div>
+            <span className="ml-2 text-white">Recording...</span>
           </div>
-          <button
-            onClick={endCall}
-            className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
-          >
-            End Call
-          </button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Input */}
       <div className="p-4 flex items-center border-t bg-gray-800">
@@ -514,7 +344,12 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
         >
           Send
         </button>
-        <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800">
+        <button
+          onClick={isRecording ? stopRecording : startRecording}
+          className={`bg-blue-700 p-2 rounded-full hover:bg-blue-800 ${
+            isRecording ? "bg-red-500" : ""
+          }`}
+        >
           <img src={microphoneImg} alt="Audio Call" className="w-6 h-6" />
         </button>
       </div>

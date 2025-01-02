@@ -1,0 +1,82 @@
+/* Container for the audio player */
+.audio-container {
+  width: 100%;
+  max-width: 350px;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Hide the default controls, as we are creating custom controls */
+.audio-player {
+  display: none;
+}
+
+/* Custom Controls */
+.audio-controls {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: #f1f1f1;
+  border-radius: 20px;
+  padding: 5px 12px;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Play/Pause button styling */
+.play-pause-button {
+  background-color: transparent;
+  color: #25d366; /* WhatsApp green */
+  border: none;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s;
+}
+
+.play-pause-button:hover {
+  background-color: #e5e5e5;
+}
+
+.play-pause-button i {
+  font-size: 18px;
+}
+
+/* Progress bar container */
+.progress-bar {
+  flex-grow: 1;
+  height: 5px;
+  background-color: #ddd;
+  border-radius: 10px;
+  margin-left: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Progress element (colored part) */
+.progress {
+  height: 100%;
+  background-color: #25d366;
+  border-radius: 10px;
+  transition: width 0.1s;
+}
+
+/* Duration text */
+.audio-duration {
+  font-size: 12px;
+  color: #999;
+  margin-left: 10px;
+  font-family: Arial, sans-serif;
+}
+
+/* Icon for play/pause */
+.fas {
+  transition: color 0.3s;
+}
+
+.audio-controls:hover .fas {
+  color: #25d366; /* Hover effect on icon */
+}

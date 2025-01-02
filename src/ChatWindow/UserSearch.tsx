@@ -73,9 +73,14 @@ const UserSearch = ({ onUserSelect }: UserSearchProps) => {
               <li
                 key={user._id}
                 onClick={() => handleUserSelect(user)}
-                className="flex text-white items-center justify-between p-2 bg-gray-700 hover:bg-gray-600 rounded-lg cursor-pointer"
+                className="flex text-white items-center justify-between p-1 bg-gray-700 hover:bg-gray-600 rounded-lg cursor-pointer"
               >
-                <span className="text-2xl">{user.firstName}</span>
+                <div className="p-4">
+                  <h1 className="text-2xl font-semibold text-white">
+                    {user?.firstName} {user?.lastName}
+                  </h1>
+                  <p className="text-sm text-gray-300">{user?.email}</p>
+                </div>
               </li>
             ))
           ) : (
@@ -86,22 +91,19 @@ const UserSearch = ({ onUserSelect }: UserSearchProps) => {
 
       {addedUsers?.data?.length > 0 && (
         <div className="p-4  mt-4">
-          <h2 className="text-xl font-semibold text-white">Added Users</h2>
           <ul>
             {addedUsers?.data?.map((data: TUser) => (
               <li
                 key={data._id}
                 onClick={() => handleAddedUserSelect(data)} // Click to open chat with added user
-                className="flex text-white items-center  justify-between p-2 mb-2 bg-gray-700 hover:bg-gray-600 rounded-lg cursor-pointer"
+                className=" text-white p-1 mb-1 bg-gray-700 hover:bg-gray-600 rounded-lg cursor-pointer"
               >
-                <span className="text-2xl">
-                  {data?.firstName} {data?.lastName}
-                </span>
-                <span
-                  className={`h-3 w-3 rounded-full ${
-                    data?.online ? "bg-green-500" : "bg-gray-400"
-                  }`}
-                />
+                <div className="p-4">
+                  <h1 className="text-2xl font-semibold text-white">
+                    {data?.firstName} {data?.lastName}
+                  </h1>
+                  <p className="text-sm text-gray-300">{data?.email}</p>
+                </div>
               </li>
             ))}
           </ul>

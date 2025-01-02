@@ -1,4 +1,182 @@
 
+
+//------------------------------------------------------------------------------------
+// import { useState, useEffect, useCallback } from "react";
+// import { useAppSelector } from "../redux/feature/hooks";
+// import { io } from "socket.io-client";
+// import videoCallImg from "../assets/video.png";
+// import audioCallImg from "../assets/phone.png";
+// const socket = io("http://localhost:5000");
+
+// interface ChatMessage {
+//   sender: string;
+//   recipient: string;
+//   text: string;
+//   timestamp: string;
+// }
+
+// interface ChatUIProps {
+//   selectedUser: { userId: string; firstName: string; lastName: string };
+//   onBack: () => void;
+// }
+
+// const ChatUI = ({ selectedUser, onBack }: ChatUIProps) => {
+//   const user = useAppSelector((state) => state.auth.user);
+//   const [input, setInput] = useState("");
+//   const [messages, setMessages] = useState<ChatMessage[]>([]);
+//   const [isTyping, setIsTyping] = useState(false); // Track if the user is typing
+
+//   useEffect(() => {
+//     if (user) {
+//       socket.emit("register", user._id);
+//     }
+
+//     socket.emit("fetchMessages", {
+//       user: user?._id,
+//       chatWith: selectedUser.userId,
+//     });
+
+//     socket.on("previousMessages", (fetchedMessages: ChatMessage[]) => {
+//       setMessages(fetchedMessages);
+//     });
+
+//     socket.on("message", (message: ChatMessage) => {
+//       if (
+//         (message.sender === selectedUser.userId &&
+//           message.recipient === user?._id) ||
+//         (message.sender === user?._id &&
+//           message.recipient === selectedUser.userId)
+//       ) {
+//         setMessages((prevMessages) => [...prevMessages, message]);
+//       }
+//     });
+
+//     socket.on("typing", (senderId: string) => {
+//       if (senderId === selectedUser.userId) {
+//         setIsTyping(true); // Show typing indicator when the other user is typing
+//       }
+//     });
+
+//     socket.on("stoppedTyping", (senderId: string) => {
+//       if (senderId === selectedUser.userId) {
+//         setIsTyping(false); // Hide typing indicator when the other user stops typing
+//       }
+//     });
+
+//     return () => {
+//       socket.off("message");
+//       socket.off("previousMessages");
+//       socket.off("typing");
+//       socket.off("stoppedTyping");
+//     };
+//   }, [selectedUser, user]);
+
+//   const handleTyping = useCallback(() => {
+//     if (input.trim()) {
+//       socket.emit("typing", {
+//         senderId: user?._id,
+//         recipientId: selectedUser.userId,
+//       });
+//     } else {
+//       socket.emit("stoppedTyping", {
+//         senderId: user?._id,
+//         recipientId: selectedUser.userId,
+//       });
+//     }
+//   }, [input, user?._id, selectedUser.userId]);
+
+//   const sendMessage = () => {
+//     if (input.trim() && user) {
+//       const message: ChatMessage = {
+//         sender: user._id,
+//         recipient: selectedUser.userId,
+//         text: input,
+//         timestamp: new Date().toISOString(),
+//       };
+//       socket.emit("message", message); // Send message to the server
+//       setMessages((prevMessages) => [...prevMessages, message]); // Optimistically update UI
+//       setInput(""); // Clear the input field
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (input.trim()) {
+//       handleTyping(); // Emit typing event if the user is typing
+//     } else {
+//       handleTyping(); // Emit stopped typing event if input is empty
+//     }
+//   }, [input, handleTyping]);
+
+//   return (
+//     <div className="h-full flex flex-col bg-gray-900 text-white">
+//       <div className="bg-blue-600 text-white p-4 flex items-center justify-between sticky top-0 z-10">
+//         <button
+//           onClick={onBack}
+//           className="text-white bg-blue-700 p-2 rounded-lg"
+//         >
+//           Back
+//         </button>
+//         <h1 className="text-lg font-semibold">
+//           {selectedUser.firstName} {selectedUser.lastName}
+//         </h1>
+//         <div className="flex space-x-4">
+//           <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800 transition ease-in-out duration-300">
+//             <img src={videoCallImg} alt="video call" className="w-6 h-6" />
+//           </button>
+//           <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800 transition ease-in-out duration-300">
+//             <img src={audioCallImg} alt="audio call" className="w-6 h-6" />
+//           </button>
+//         </div>
+//       </div>
+
+//       <div className="flex-1 overflow-y-auto p-4">
+//         {messages.map((msg, idx) => (
+//           <div
+//             key={idx}
+//             className={`mb-2 flex ${
+//               msg.sender === user?._id ? "justify-end" : "justify-start"
+//             }`}
+//           >
+//             <div
+//               className={`p-2 rounded-lg text-white ${
+//                 msg.sender === user?._id ? "bg-blue-500" : "bg-gray-700"
+//               } max-w-xs break-words`}
+//             >
+//               <p className="whitespace-pre-wrap">{msg.text}</p>
+//             </div>
+//           </div>
+//         ))}
+
+//         {/* Show typing indicator only after the last message */}
+//         {isTyping && (
+//           <div className="mt-2 text-white italic">
+//             {selectedUser.firstName} is typing...
+//           </div>
+//         )}
+//       </div>
+
+//       <div className="flex items-center p-4 border-t bg-gray-800">
+//         <input
+//           type="text"
+//           className="flex-1 px-4 py-2 border rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           placeholder="Type a message..."
+//           value={input}
+//           onChange={(e) => setInput(e.target.value)} // Directly set input state
+//           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+//         />
+//         <button
+//           className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+//           onClick={sendMessage}
+//         >
+//           Send
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ChatUI;
+
 // --------------------------------------------------------------------------
 // import { useState, useEffect } from "react";
 // import { useAppSelector } from "../redux/feature/hooks";
