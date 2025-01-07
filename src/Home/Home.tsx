@@ -3,7 +3,6 @@
 
 // const Home = () => {
 //   const user = useAppSelector((state) => state.auth.user);
-//   console.log(user);
 
 //   return (
 //     <div>
