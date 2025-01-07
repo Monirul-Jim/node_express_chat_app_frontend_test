@@ -28,6 +28,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const [userStatus, setUserStatus] = useState<string>("offline");
   const scrollableContainerRef = useRef<HTMLDivElement | null>(null);
+
   // Scroll to bottom whenever messages change
   useEffect(() => {
     if (scrollableContainerRef.current) {
@@ -171,7 +172,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
       const reader = new FileReader();
 
       reader.onloadend = () => {
-        const base64Audio = reader.result as string;
+        const base64Audio = reader.result as string; // Base64 audio string
         socket.emit("message", {
           sender: user?._id,
           recipient: selectedUser.userId,
@@ -180,7 +181,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
         });
       };
 
-      reader.readAsDataURL(audioBlob);
+      reader.readAsDataURL(audioBlob); // Convert blob to base64
     };
 
     mediaRecorder.start();
@@ -219,6 +220,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
   );
   return (
     <div className="h-full flex flex-col bg-gray-900 text-white">
+      {/* Header */}
       <div className="bg-blue-600 p-4 flex items-center justify-between sticky top-0 z-10">
         {/* Left Section: Back button and selected user */}
         <div className="flex items-center space-x-4">
