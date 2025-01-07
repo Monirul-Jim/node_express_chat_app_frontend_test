@@ -19,24 +19,21 @@ const UserSearch = ({ onUserSelect }: UserSearchProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // Fetch users based on the search query
   const { data, isLoading, isError } = useGetSearchUserQuery(searchQuery);
   const [addedUser] = useAddedUserMutation();
   const { data: addedUsers } = useGetAddedUsersQuery(user?._id);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value); // Update the search query on input change
+    setSearchQuery(e.target.value);
   };
 
   const handleUserSelect = async (users: TUser) => {
     try {
-      // Add the user to the chat
       await addedUser({
         currentUserId: user?._id,
         otherUserId: users?._id,
       }).unwrap();
 
-      // Pass selected user to parent component
       onUserSelect(users);
     } catch (error) {
       console.error("Failed to add user to chat:", error);
@@ -107,7 +104,7 @@ const UserSearch = ({ onUserSelect }: UserSearchProps) => {
             {addedUsers?.data?.map((data: TUser) => (
               <li
                 key={data._id}
-                onClick={() => handleAddedUserSelect(data)} // Click to open chat with added user
+                onClick={() => handleAddedUserSelect(data)}
                 className=" text-white p-1 mb-1 bg-gray-700 hover:bg-gray-600 rounded-lg cursor-pointer"
               >
                 <div className="p-4">

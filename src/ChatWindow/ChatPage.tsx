@@ -7,23 +7,20 @@ const ChatPage = () => {
   const [selectedUser, setSelectedUser] = useState<TUser | null>(null);
 
   const handleUserSelect = (user: TUser) => {
-    setSelectedUser(user); // Set the selected user to open chat
+    setSelectedUser(user);
   };
 
   const handleBack = () => {
-    setSelectedUser(null); // Reset the selected user when back is clicked
+    setSelectedUser(null);
   };
 
   return (
     <div className="h-screen bg-gray-900 text-white flex flex-col lg:flex-row">
-      {/* Left panel: Search and Added User List */}
       <div
         className={`flex-1 lg:w-1/4 ${selectedUser ? "hidden lg:block" : ""}`}
       >
         <UserSearch onUserSelect={handleUserSelect} />
       </div>
-
-      {/* Right panel: Chat UI */}
       <div className="flex-1 lg:w-2/3">
         {!selectedUser ? (
           <div className="flex items-center justify-center h-full">

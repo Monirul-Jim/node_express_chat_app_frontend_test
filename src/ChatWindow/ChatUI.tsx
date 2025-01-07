@@ -5,7 +5,7 @@ import videoCallImg from "../assets/video.png";
 import audioCallImg from "../assets/phone.png";
 import microphoneImg from "../assets/microphone.png";
 import { TUser } from "../redux/feature/auth/authSlice";
-const socket = io("http://localhost:5000"); // Socket.IO server URL
+const socket = io("http://localhost:5000");
 
 interface ChatMessage {
   sender: string;
@@ -27,24 +27,29 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const [userStatus, setUserStatus] = useState<string>("offline");
-  // Fetch messages and register user
+  const scrollableContainerRef = useRef<HTMLDivElement | null>(null);
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    if (scrollableContainerRef.current) {
+      scrollableContainerRef.current.scrollTop =
+        scrollableContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
   useEffect(() => {
     if (user) {
-      socket.emit("register", user._id); // Register user with Socket.IO
+      socket.emit("register", user._id);
     }
     if (selectedUser && user) {
-      // Start a chat with the selected user
       socket.emit("startChat", {
         userId: user._id,
         selectedUserId: selectedUser.userId,
       });
 
-      // Emit checkUserStatus to get the selected user's status
       socket.emit("checkUserStatus", selectedUser.userId);
 
       socket.on("userStatus", ({ userId, status }) => {
         if (userId === selectedUser.userId) {
-          setUserStatus(status); // Update status for the selected user
+          setUserStatus(status);
         }
       });
     }
@@ -92,7 +97,6 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
 
     return () => {
       if (selectedUser && user) {
-        // End the chat when the user leaves the conversation
         socket.emit("endChat", {
           userId: user?._id,
           selectedUserId: selectedUser.userId,
@@ -122,9 +126,9 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
 
   useEffect(() => {
     if (input.trim()) {
-      handleTyping(); // Emit typing event if the user is typing
+      handleTyping();
     } else {
-      handleTyping(); // Emit stopped typing event if input is empty
+      handleTyping();
     }
   }, [input, handleTyping]);
 
@@ -167,7 +171,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
       const reader = new FileReader();
 
       reader.onloadend = () => {
-        const base64Audio = reader.result as string; // Base64 audio string
+        const base64Audio = reader.result as string;
         socket.emit("message", {
           sender: user?._id,
           recipient: selectedUser.userId,
@@ -176,7 +180,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
         });
       };
 
-      reader.readAsDataURL(audioBlob); // Convert blob to base64
+      reader.readAsDataURL(audioBlob);
     };
 
     mediaRecorder.start();
@@ -215,7 +219,6 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
   );
   return (
     <div className="h-full flex flex-col bg-gray-900 text-white">
-      {/* Header */}
       <div className="bg-blue-600 p-4 flex items-center justify-between sticky top-0 z-10">
         {/* Left Section: Back button and selected user */}
         <div className="flex items-center space-x-4">
@@ -247,7 +250,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div ref={scrollableContainerRef} className="flex-1 overflow-y-auto p-4">
         <div>
           {Object.keys(groupedMessages).map((dateKey, index) => (
             <div key={index}>
