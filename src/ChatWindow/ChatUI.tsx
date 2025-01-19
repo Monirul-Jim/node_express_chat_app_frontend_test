@@ -5,7 +5,7 @@ import videoCallImg from "../assets/video.png";
 import audioCallImg from "../assets/phone.png";
 import microphoneImg from "../assets/microphone.png";
 import { TUser } from "../redux/feature/auth/authSlice";
-const socket = io("http://localhost:5000");
+const socket = io("https://node-express-chat-app-backend-test.onrender.com");
 
 interface ChatMessage {
   sender: string;
