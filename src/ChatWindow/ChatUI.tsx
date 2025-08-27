@@ -32,7 +32,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
   const [userStatus, setUserStatus] = useState<string>("offline");
   const scrollableContainerRef = useRef<HTMLDivElement | null>(null);
   const [inCall, setInCall] = useState(false);
-  const [callType, setCallType] = useState<"video" | "audio" | null>(null);
+  const [_callType, setCallType] = useState<"video" | "audio" | null>(null);
   // Scroll to bottom whenever messages change
   useEffect(() => {
     if (scrollableContainerRef.current) {
@@ -249,7 +249,7 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
           {inCall ? (
             <VideoCall
               channelName={`chat-${user?._id}-${selectedUser.userId}`}
-              uid={user?._id}
+               uid={user?._id ?? ""} 
               onLeave={() => {
                 setInCall(false);
                 setCallType(null);
