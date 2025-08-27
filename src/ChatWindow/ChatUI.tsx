@@ -19,7 +19,6 @@ interface ChatMessage {
 
 interface ChatUIProps {
   selectedUser: TUser;
-  uid: string;
   onBack: () => void;
 }
 
