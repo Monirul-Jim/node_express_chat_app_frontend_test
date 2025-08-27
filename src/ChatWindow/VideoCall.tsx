@@ -23,7 +23,7 @@ const VideoCall: React.FC<VideoCallProps> = ({ channelName, uid, onLeave }) => {
 
   useEffect(() => {
     const initCall = async () => {
-      const res = await fetch(`http://localhost:5000/api/v1/agora/token?channel=${channelName}&uid=${uid}`);
+      const res = await fetch(`https://node-express-chat-app-backend-test-hao2.onrender.com/api/v1/agora/token?channel=${channelName}&uid=${uid}`);
       const { appId, token } = await res.json();
 
       await client.join(appId, channelName, token, uid);
