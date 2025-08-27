@@ -5,7 +5,9 @@ import videoCallImg from "../assets/video.png";
 import audioCallImg from "../assets/phone.png";
 import microphoneImg from "../assets/microphone.png";
 import { TUser } from "../redux/feature/auth/authSlice";
-const socket = io("https://node-express-chat-app-backend-test.onrender.com");
+import VideoCall from "./VideoCall";
+const socket = io("http://localhost:5000");
+// const socket = io("https://node-express-chat-app-backend-test.onrender.com");
 
 interface ChatMessage {
   sender: string;
@@ -17,6 +19,7 @@ interface ChatMessage {
 
 interface ChatUIProps {
   selectedUser: TUser;
+  uid: string;
   onBack: () => void;
 }
 
@@ -28,7 +31,8 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const [userStatus, setUserStatus] = useState<string>("offline");
   const scrollableContainerRef = useRef<HTMLDivElement | null>(null);
-
+  const [inCall, setInCall] = useState(false);
+  const [callType, setCallType] = useState<"video" | "audio" | null>(null);
   // Scroll to bottom whenever messages change
   useEffect(() => {
     if (scrollableContainerRef.current) {
@@ -242,12 +246,38 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
 
         {/* Right Section: Video and Audio Call buttons */}
         <div className="flex space-x-4">
-          <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800">
-            <img src={videoCallImg} alt="Video Call" className="w-6 h-6" />
-          </button>
-          <button className="bg-blue-700 p-2 rounded-full hover:bg-blue-800">
-            <img src={audioCallImg} alt="Audio Call" className="w-6 h-6" />
-          </button>
+          {inCall ? (
+            <VideoCall
+              channelName={`chat-${user?._id}-${selectedUser.userId}`}
+              uid={user?._id}
+              onLeave={() => {
+                setInCall(false);
+                setCallType(null);
+              }}
+            />
+          ) : (
+            <>
+              {/* your chat UI here */}
+              <button
+                className="bg-blue-700 p-2 rounded-full hover:bg-blue-800"
+                onClick={() => {
+                  setCallType("video");
+                  setInCall(true);
+                }}
+              >
+                <img src={videoCallImg} alt="Video Call" className="w-6 h-6" />
+              </button>
+              <button
+                className="bg-blue-700 p-2 rounded-full hover:bg-blue-800"
+                onClick={() => {
+                  setCallType("audio");
+                  setInCall(true);
+                }}
+              >
+                <img src={audioCallImg} alt="Audio Call" className="w-6 h-6" />
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -291,35 +321,6 @@ const ChatUI: React.FC<ChatUIProps> = ({ selectedUser, onBack }) => {
             </div>
           ))}
         </div>
-        {/* {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`mb-2 flex ${
-              msg.sender === user?._id ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`p-2 rounded-lg text-white flex items-center ${
-                msg.sender === user?._id ? "bg-blue-500" : "bg-gray-700"
-              }`}
-            >
-              {msg.text ? (
-                <span>{msg.text}</span>
-              ) : msg.audioUrl ? (
-                <audio controls className="mr-2">
-                  <source src={msg.audioUrl} type="audio/webm" />
-                  Your browser does not support the audio element.
-                </audio>
-              ) : null}
-              <span className="text-sm text-gray-300 ml-2">
-                {new Date(msg.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-            </div>
-          </div>
-        ))} */}
 
         {isTyping && <p className="italic">Typing...</p>}
         {isRecording && (
